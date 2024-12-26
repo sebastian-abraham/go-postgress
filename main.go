@@ -3,10 +3,12 @@ package main
 import (
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/joho/godotenv"
-	"golang.org/x/mod/sumdb/storage"
+	"github.com/sebastian-abraham/go-with-postgress/models"
+	"github.com/sebastian-abraham/go-with-postgress/storage"
 	"gorm.io/gorm"
 )
 
@@ -87,6 +89,15 @@ func main() {
 	err := godotenv.Load(".env")
 	if err != nil {
 		log.Fatal(err)
+	}
+
+	config := &storage.Config{
+		Host:     os.Getenv("DB_HOST"),
+		Port:     os.Getenv("DB_PORT"),
+		Password: os.Getenv("DB_PASSWORD"),
+		User:     os.Getenv("DB_USER"),
+		SSLMode:  os.Getenv("DB_SSLMODE"),
+		DBName:   os.Getenv("DB_NAME"),
 	}
 
 	db, err := storage.NewConnection(config)
