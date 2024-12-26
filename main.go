@@ -136,6 +136,11 @@ func main() {
 		DB: db,
 	}
 
+	err = models.MigrateTasks(db)
+	if err != nil {
+		log.Fatal("Could not migrate tasks")
+	}
+
 	app := fiber.New()
 	r.SetupRoutes(app)
 	app.Listen(":8080")
