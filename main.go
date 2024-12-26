@@ -29,13 +29,14 @@ func (r *Repository) GetTask(context *fiber.Ctx) error {
 	if err != nil {
 		context.Status(http.StatusBadRequest).JSON(
 			&fiber.Map{
-				"messsage": "task cannot be deleted",
+				"messsage": "task couldnt be retrived",
 			})
 		return err
 	}
 	context.Status(http.StatusOK).JSON(
 		&fiber.Map{
-			"messsage": "task deleted successfully",
+			"messsage": "task found",
+			"data":     taskModel,
 		})
 	return nil
 }
@@ -43,13 +44,6 @@ func (r *Repository) GetTask(context *fiber.Ctx) error {
 func (r *Repository) DeleteTask(context *fiber.Ctx) error {
 	taskModel := models.Task{}
 	id := context.Params("id")
-	if id == "" {
-		context.Status(http.StatusBadRequest).JSON(
-			&fiber.Map{
-				"messsage": "id cannot be empty",
-			})
-		return nil
-	}
 
 	err := r.DB.Delete(taskModel, id).Error
 	if err != nil {
@@ -91,7 +85,7 @@ func (r *Repository) GetTasks(context *fiber.Ctx) error {
 func (r *Repository) CreateTask(context *fiber.Ctx) error {
 	task := Task{}
 
-	err := context.BodyParser(task)
+	err := context.BodyParser(&task)
 
 	if err != nil {
 		context.Status(http.StatusUnprocessableEntity).JSON(
