@@ -21,6 +21,25 @@ type Repository struct {
 	DB *gorm.DB
 }
 
+func (r *Repository) GetTask(context *fiber.Ctx) error {
+	id := context.Params("id")
+	taskModel := &models.Task{}
+
+	err := r.DB.Where("id = ?", id).First(taskModel).Error
+	if err != nil {
+		context.Status(http.StatusBadRequest).JSON(
+			&fiber.Map{
+				"messsage": "task cannot be deleted",
+			})
+		return err
+	}
+	context.Status(http.StatusOK).JSON(
+		&fiber.Map{
+			"messsage": "task deleted successfully",
+		})
+	return nil
+}
+
 func (r *Repository) DeleteTask(context *fiber.Ctx) error {
 	taskModel := models.Task{}
 	id := context.Params("id")
